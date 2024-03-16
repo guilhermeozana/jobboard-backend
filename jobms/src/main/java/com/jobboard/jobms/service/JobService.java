@@ -1,17 +1,18 @@
 package com.jobboard.jobms.service;
 
-import com.jobboard.jobms.model.Job;
+import com.jobboard.jobms.client.CompanyClient;
+import com.jobboard.jobms.client.ReviewClient;
 import com.jobboard.jobms.exception.JobNotFoundException;
+import com.jobboard.jobms.model.Job;
 import com.jobboard.jobms.repository.JobRepository;
-import com.jobboard.library.dto.CompanyDTO;
-import com.jobboard.library.dto.JobDTO;
-import com.jobboard.library.dto.JobWithCompanyDTO;
-import com.jobboard.library.mapper.GenericMapper;
+import com.jobboard.shared.dto.*;
+import com.jobboard.shared.mapper.GenericMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,32 +20,49 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JobService {
     // private List<Job> jobs = new ArrayList<>();
-    final JobRepository jobRepository;
 
-    final RestTemplate restTemplate;
+    private final JobRepository jobRepository;
 
-    public List<JobWithCompanyDTO> findAll() {
+    private final CompanyClient companyClient;
+
+    private final ReviewClient reviewClient;
+
+    //    private final RestTemplate restTemplate;
+
+    private static final List<JobWithCompanyReviewsDTO> JOBS_CACHE = new ArrayList<>();
+
+    @CircuitBreaker(name = "companyBreaker", fallbackMethod = "companyBreakerFallback")
+    //@Retry(name = "companyBreaker", fallbackMethod = "companyBreakerFallback")
+    //@RateLimiter(name = "companyBreaker", fallbackMethod = "companyBreakerFallback")
+    public List<JobWithCompanyReviewsDTO> findAll() {
         List<Job> jobs = jobRepository.findAll();
 
-        return jobs.stream()
-                .map(job -> createJobWithCompanyDTO(GenericMapper.map(job, JobDTO.class), getCompanyById(job.getCompanyId())))
+        List<JobWithCompanyReviewsDTO> listJobWithCompanyDTO = jobs.stream()
+                .map(this::mapToJobWithCompanyReviewsDTO)
                 .collect(Collectors.toList());
+        
+        JOBS_CACHE.addAll(listJobWithCompanyDTO);
+
+        return listJobWithCompanyDTO;
+        
     }
 
-    CompanyDTO getCompanyById(Long id) {
-        return restTemplate.getForObject(
-            "http://COMPANY-SERVICE:8081/companies/" + id,
-            CompanyDTO.class);
+    private List<JobWithCompanyReviewsDTO> companyBreakerFallback(Throwable e) {
+        if(JOBS_CACHE.isEmpty())
+
+        return JOBS_CACHE;
     }
 
-    public void createJob(Job job) {
-        jobRepository.save(job);
+    public Long createJob(JobDTO jobDTO) {
+        Job job = jobRepository.save(GenericMapper.map(jobDTO, Job.class));
+        
+        return job.getId();
     }
 
-    public JobWithCompanyDTO getJobById(Long id) {
-        Job job = jobRepository.findById(id).orElse(null);
+    public JobWithCompanyReviewsDTO getJobById(Long id) {
+        Job job = jobRepository.findById(id).orElseThrow(() -> new JobNotFoundException("Job not found"));
 
-        return createJobWithCompanyDTO(GenericMapper.map(job, JobDTO.class), getCompanyById(job.getCompanyId()));
+        return mapToJobWithCompanyReviewsDTO(job);
     }
 
     public void deleteJobById(Long id) {
@@ -62,10 +80,29 @@ public class JobService {
         jobRepository.save(jobSaved);
     }
 
-    JobWithCompanyDTO createJobWithCompanyDTO(JobDTO jobDTO, CompanyDTO companyDTO) {
-        return JobWithCompanyDTO.builder()
-                .company(companyDTO)
-                .job(jobDTO)
-                .build();
+    private JobWithCompanyReviewsDTO mapToJobWithCompanyReviewsDTO(Job job) {
+        CompanyDTO companyDTO = companyClient.getCompany(job.getCompanyId());
+        List<ReviewDTO> reviewsList = reviewClient.getReviewsByCompanyId(job.getCompanyId());
+
+        CompanyWithReviewsDTO companyWithReviewsDTO = CompanyWithReviewsDTOFactory.create(companyDTO, reviewsList);
+
+        return JobWithCompanyReviewsDTOFactory.create(GenericMapper.map(job, JobDTO.class), companyWithReviewsDTO);
     }
+
+//    CompanyDTO getCompanyById(Long id) {
+//
+//         return restTemplate.getForObject(
+//                "http://COMPANY-SERVICE:8081/companies/" + id,
+//                CompanyDTO.class);
+//    }
+
+//    List<ReviewDTO> getReviewsList(Long id) {
+//        return reviewClient.getReviewsByCompanyId(id);
+//
+//       return restTemplate.exchange(
+//                "http://REVIEW-SERVICE:8083/reviews?companyId=" + id,
+//                HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<ReviewDTO>>() {}).getBody();
+//    }
 }

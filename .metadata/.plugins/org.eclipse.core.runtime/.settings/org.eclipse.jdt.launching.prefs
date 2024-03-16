@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+org.eclipse.jdt.launching.PREF_CONNECT_TIMEOUT=20000
+org.eclipse.jdt.launching.PREF_DEFAULT_ENVIRONMENTS_XML=
+org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType56,C\:\\Program Files\\Java\\zulu17.48.15-ca-jdk17.0.10-win_x64">\r\n    <vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\r\n        <vm id\="1710554836396" name\="jre" path\="C\:\\Users\\Guilherme\\Downloads\\sts-4.21.1.RELEASE\\plugins\\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_17.0.10.v20240120-1143\\jre"/>\r\n        <vm id\="C\:\\Program Files\\Java\\zulu17.48.15-ca-jdk17.0.10-win_x64" name\="zulu17.48.15-ca-jdk17.0.10-win_x64" path\="C\:\\Program Files\\Java\\zulu17.48.15-ca-jdk17.0.10-win_x64"/>\r\n    </vmType>\r\n</vmSettings>\r\n
+org.eclipse.jdt.launching.only_include_exported_classpath_entries=false

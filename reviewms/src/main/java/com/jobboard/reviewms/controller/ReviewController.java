@@ -1,13 +1,12 @@
 package com.jobboard.reviewms.controller;
 
-import com.jobboard.library.dto.ReviewDTO;
-import com.jobboard.reviewms.model.Review;
+import com.jobboard.shared.dto.ReviewDTO;
 import com.jobboard.reviewms.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,11 +21,11 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addReview(@RequestParam Long companyId,
+    public ResponseEntity<ReviewDTO> createReview(@RequestParam Long companyId,
                                             @RequestBody ReviewDTO reviewDTO){
-            reviewService.createReview(companyId, reviewDTO);
+            Long reviewId = reviewService.createReview(companyId, reviewDTO);
 
-            return ResponseEntity.ok("Review Created Successfully");
+            return ResponseEntity.created(URI.create("reviews/" + reviewId)).build();
     }
 
     @GetMapping("/{reviewId}")

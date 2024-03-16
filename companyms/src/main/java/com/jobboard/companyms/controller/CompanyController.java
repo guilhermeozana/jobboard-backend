@@ -1,7 +1,8 @@
 package com.jobboard.companyms.controller;
 
 import com.jobboard.companyms.service.CompanyService;
-import com.jobboard.library.dto.CompanyDTO;
+import com.jobboard.shared.dto.CompanyDTO;
+import com.jobboard.shared.dto.CompanyWithReviewsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity<List<CompanyDTO>> getAllCompanies(){
+    public ResponseEntity<List<CompanyWithReviewsDTO>> getAllCompanies(){
         return new ResponseEntity<>(companyService.getAllCompanies(),
                 HttpStatus.OK);
     }

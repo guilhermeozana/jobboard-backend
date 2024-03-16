@@ -1,7 +1,7 @@
 package com.jobboard.reviewms.service;
 
-import com.jobboard.library.dto.ReviewDTO;
-import com.jobboard.library.mapper.GenericMapper;
+import com.jobboard.shared.dto.ReviewDTO;
+import com.jobboard.shared.mapper.GenericMapper;
 import com.jobboard.reviewms.model.Review;
 import com.jobboard.reviewms.exception.ReviewNotFoundException;
 import com.jobboard.reviewms.repository.ReviewRepository;
@@ -26,9 +26,11 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public void createReview(Long companyId, ReviewDTO reviewDTO) {
+    public Long createReview(Long companyId, ReviewDTO reviewDTO) {
             reviewDTO.setCompanyId(companyId);
-            reviewRepository.save(GenericMapper.map(reviewDTO, Review.class));
+            Review review = reviewRepository.save(GenericMapper.map(reviewDTO, Review.class));
+
+            return review.getId();
     }
 
     public ReviewDTO getReviewById(Long reviewId) {

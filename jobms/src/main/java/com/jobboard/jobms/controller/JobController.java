@@ -1,9 +1,8 @@
 package com.jobboard.jobms.controller;
 
-import com.jobboard.jobms.model.Job;
 import com.jobboard.jobms.service.JobService;
-import com.jobboard.library.dto.JobDTO;
-import com.jobboard.library.dto.JobWithCompanyDTO;
+import com.jobboard.shared.dto.JobDTO;
+import com.jobboard.shared.dto.JobWithCompanyReviewsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,25 +14,25 @@ import java.util.List;
 @RequestMapping("/jobs")
 @RequiredArgsConstructor
 public class JobController {
-    private final JobService jobService;
+    private final JobService jobService; 
 
     @GetMapping
-    public ResponseEntity<List<JobWithCompanyDTO>> findAll(){
+    public ResponseEntity<List<JobWithCompanyReviewsDTO>> findAll(){
         return ResponseEntity.ok(jobService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<String> createJob(@RequestBody Job job){
-        jobService.createJob(job);
+    public ResponseEntity<JobDTO> createJob(@RequestBody JobDTO job){
+        Long jobId = jobService.createJob(job);
 
-        return ResponseEntity.created(URI.create("/{id}")).build();
+        return ResponseEntity.created(URI.create("jobs/" + jobId)).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobWithCompanyDTO> getJobById(@PathVariable Long id){
-        JobWithCompanyDTO jobWithCompanyDTO = jobService.getJobById(id);
+    public ResponseEntity<JobWithCompanyReviewsDTO> getJobById(@PathVariable Long id){
+        JobWithCompanyReviewsDTO jobById = jobService.getJobById(id);
 
-        return ResponseEntity.ok(jobWithCompanyDTO);
+        return ResponseEntity.ok(jobById);
     }
 
     @DeleteMapping("/{id}")

@@ -1,10 +1,14 @@
 package com.jobboard.companyms.service;
 
+import com.jobboard.companyms.client.ReviewClient;
 import com.jobboard.companyms.model.Company;
 import com.jobboard.companyms.exception.CompanyNotFoundException;
 import com.jobboard.companyms.repository.CompanyRepository;
-import com.jobboard.library.dto.CompanyDTO;
-import com.jobboard.library.mapper.GenericMapper;
+import com.jobboard.shared.dto.CompanyDTO;
+import com.jobboard.shared.dto.CompanyWithReviewsDTO;
+import com.jobboard.shared.dto.CompanyWithReviewsDTOFactory;
+import com.jobboard.shared.dto.ReviewDTO;
+import com.jobboard.shared.mapper.GenericMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -17,11 +21,21 @@ import java.util.stream.Collectors;
 public class CompanyService {
     private final CompanyRepository companyRepository;
 
-    public List<CompanyDTO> getAllCompanies() {
+    private final ReviewClient reviewClient;
+
+    //    private final RestTemplate restTemplate;
+
+    public List<CompanyWithReviewsDTO> getAllCompanies() {
         List<Company> companyList = companyRepository.findAll();
 
-        return companyList.stream().map(company -> GenericMapper.map(company, CompanyDTO.class))
+        return companyList.stream().map(this::mapToCompanyWithReviewsDTO)
                 .collect(Collectors.toList());
+    }
+
+    public CompanyDTO getCompanyById(Long id) {
+        Company company = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException("Company not found"));
+
+        return GenericMapper.map(company, CompanyDTO.class);
     }
 
     public void updateCompany(CompanyDTO company, Long id) {
@@ -44,10 +58,21 @@ public class CompanyService {
         companyRepository.deleteById(id);
     }
 
-    public CompanyDTO getCompanyById(Long id) {
-        Company company = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException("Company not found"));
+    CompanyWithReviewsDTO mapToCompanyWithReviewsDTO(Company company) {
+        CompanyDTO companyDTO = GenericMapper.map(company, CompanyDTO.class);
+        List<ReviewDTO> reviewsList = reviewClient.getReviewsByCompanyId(company.getId());
 
-        return GenericMapper.map(company, CompanyDTO.class);
+        return CompanyWithReviewsDTOFactory.create(companyDTO, reviewsList);
     }
+
+
+//    List<ReviewDTO> getReviewsList(Long id) {
+//
+//        return restTemplate.exchange(
+//                "http://REVIEW-SERVICE:8083/reviews?companyId=" + id,
+//                HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<ReviewDTO>>() {}).getBody()
+//    }
 
 }

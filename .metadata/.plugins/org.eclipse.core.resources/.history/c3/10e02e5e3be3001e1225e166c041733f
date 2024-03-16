@@ -1,0 +1,8 @@
+com\jobboard\library\dto\JobDTO.class
+com\jobboard\library\mapper\GenericMapper.class
+com\jobboard\library\config\RestTemplateConfig.class
+com\jobboard\library\dto\JobWithCompanyDTO.class
+com\jobboard\library\dto\ReviewDTO.class
+com\jobboard\library\dto\CompanyDTO.class
+com\jobboard\library\config\ModelMapperConfig.class
+com\jobboard\library\dto\JobWithCompanyDTO$JobWithCompanyDTOBuilder.class

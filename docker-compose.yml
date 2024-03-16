@@ -10,3 +10,9 @@ services:
       - POSTGRES_DB=jobboard
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin123
+  
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
