@@ -2,6 +2,7 @@ package com.jobboard.companyms.client;
 
 import com.jobboard.shared.dto.ReviewDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -12,4 +13,7 @@ public interface ReviewClient {
 
     @GetMapping("/reviews")
     List<ReviewDTO> getReviewsByCompanyId(@RequestParam Long companyId);
+
+    @GetMapping("/getAverageRatingByCompany")
+    Double getAverageRatingByCompany(@RequestParam Long companyId);
 }

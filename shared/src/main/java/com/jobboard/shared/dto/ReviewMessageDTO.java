@@ -4,17 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyWithReviewsDTO {
+public class ReviewMessageDTO {
     private Long id;
-    private String name;
+    private String title;
     private String description;
     private Double rating;
-    private List<ReviewDTO> reviewsList;
-
+    private Long companyId;
+    private Double companyRatingUpdated;
 
 }

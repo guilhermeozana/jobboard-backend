@@ -14,6 +14,12 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  #RabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
 
 #Eureka
 eureka:
@@ -28,4 +34,6 @@ management:
   tracing:
     sampling:
       probability: 1.0
+
+
 

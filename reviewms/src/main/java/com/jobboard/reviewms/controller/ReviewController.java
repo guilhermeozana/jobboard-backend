@@ -20,18 +20,18 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewsByCompanyId(companyId));
     }
 
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long reviewId){
+        return ResponseEntity.ok(reviewService.getReviewById(reviewId));
+
+    }
+
     @PostMapping
     public ResponseEntity<ReviewDTO> createReview(@RequestParam Long companyId,
                                             @RequestBody ReviewDTO reviewDTO){
             Long reviewId = reviewService.createReview(companyId, reviewDTO);
 
             return ResponseEntity.created(URI.create("reviews/" + reviewId)).build();
-    }
-
-    @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long reviewId){
-        return ResponseEntity.ok(reviewService.getReviewById(reviewId));
-
     }
 
     @PutMapping("/{reviewId}")

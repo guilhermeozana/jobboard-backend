@@ -4,10 +4,7 @@ import com.jobboard.companyms.client.ReviewClient;
 import com.jobboard.companyms.model.Company;
 import com.jobboard.companyms.exception.CompanyNotFoundException;
 import com.jobboard.companyms.repository.CompanyRepository;
-import com.jobboard.shared.dto.CompanyDTO;
-import com.jobboard.shared.dto.CompanyWithReviewsDTO;
-import com.jobboard.shared.dto.CompanyWithReviewsDTOFactory;
-import com.jobboard.shared.dto.ReviewDTO;
+import com.jobboard.shared.dto.*;
 import com.jobboard.shared.mapper.GenericMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -63,6 +60,15 @@ public class CompanyService {
         List<ReviewDTO> reviewsList = reviewClient.getReviewsByCompanyId(company.getId());
 
         return CompanyWithReviewsDTOFactory.create(companyDTO, reviewsList);
+    }
+
+    public void updateCompanyRating(ReviewMessageDTO reviewMessage) {
+        Company company = companyRepository.findById(reviewMessage.getCompanyId())
+                .orElseThrow(() -> new CompanyNotFoundException("Company not found"));
+
+        company.setRating(reviewMessage.getCompanyRatingUpdated());
+
+        companyRepository.save(company);
     }
 
 

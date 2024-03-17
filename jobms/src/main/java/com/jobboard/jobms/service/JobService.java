@@ -48,7 +48,17 @@ public class JobService {
     }
 
     private List<JobWithCompanyReviewsDTO> companyBreakerFallback(Throwable e) {
-        if(JOBS_CACHE.isEmpty())
+        if(JOBS_CACHE.isEmpty()) {
+            List<Job> listJobs = jobRepository.findAll();
+
+            //It returns the Job without the company while the company service is down increasing the resilience
+            return listJobs
+                        .stream()
+                        .map(job -> JobWithCompanyReviewsDTOFactory
+                                .create(GenericMapper.map(job, JobDTO.class), null)
+                        )
+                        .collect(Collectors.toList());
+        }
 
         return JOBS_CACHE;
     }
