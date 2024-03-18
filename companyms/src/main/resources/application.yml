@@ -9,7 +9,7 @@ spring:
   application:
     name: company-service
   config:
-    import: configserver:http://localhost:8084
+    import: config-server:http://localhost:8084
   profiles:
     active: default
 

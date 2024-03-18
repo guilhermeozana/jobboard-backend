@@ -1,10 +1,13 @@
-job-service-url: http://job:8081
-company-service-url: http://company:8082
-review-service-url: http://review:8083
+job-service-url: http://localhost:8081
+company-service-url: http://localhost:8082
+review-service-url: http://localhost:8083
 
 server:
   port: 8081
 
+spring:
+  application:
+    name: company-service2
 
   datasource:
     url: jdbc:postgresql://localhost:5432/jobboard
