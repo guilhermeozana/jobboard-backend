@@ -18,10 +18,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  config:
-    import: optional:configserver:http://localhost:8084
-  profiles:
-    active: dev
 
 #Eureka
 eureka:

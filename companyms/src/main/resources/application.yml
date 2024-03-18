@@ -8,10 +8,34 @@ server:
 spring:
   application:
     name: company-service
-  config:
-    import: config-server:http://localhost:8084
-  profiles:
-    active: default
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jobboard
+    username: admin
+    password: admin123
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  #RabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
 
+#Eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
 
+#Zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0

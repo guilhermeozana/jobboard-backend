@@ -37,19 +37,6 @@ services:
     networks:
       - microservice-network
       - postgres
-  
-  configserver:
-    image: guilhermeozana/configserver:v1
-    container_name: configserver
-    ports:
-      -  "8084:8084"
-    depends_on:
-      - servicereg
-    networks:
-      - microservice-network
-      - postgres
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   servicereg:
     image: guilhermeozana/servicereg:v1
@@ -71,7 +58,6 @@ services:
       -  "8082:8082"
     depends_on:
       - servicereg
-      - configserver
     networks:
       - microservice-network
       - postgres
@@ -85,7 +71,6 @@ services:
       -  "8081:8081"
     depends_on:
       - servicereg
-      - configserver
     networks:
       - microservice-network
       - postgres
@@ -100,7 +85,6 @@ services:
       -  "8083:8083"
     depends_on:
       - servicereg
-      - configserver
     networks:
       - microservice-network
       - postgres
