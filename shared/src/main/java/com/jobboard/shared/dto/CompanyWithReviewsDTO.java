@@ -15,6 +15,4 @@ public class CompanyWithReviewsDTO {
     private String description;
     private Double rating;
     private List<ReviewDTO> reviewsList;
-
-
 }

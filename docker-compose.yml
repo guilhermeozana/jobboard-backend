@@ -1,18 +1,130 @@
 version: "3.9"
 
 services:
-  jobboard-db:
-    container_name: jobboard
-    image: postgres:9.6
+
+  postgres:
+    container_name: postgres
+    image: postgres
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=jobboard
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin123
-  
+      - PGDATA=/data/postgres
+    volumes:
+      - postgres:/data/postgres
+    networks:
+      - postgres
+    
   zipkin:
     container_name: zipkin
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
+    networks:
+      - microservice-network
+      - postgres
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"  # AMQP port
+      - "15672:15672"  # Management UI port
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+    networks:
+      - microservice-network
+      - postgres
+  
+  configserver:
+    image: guilhermeozana/configserver:v1
+    container_name: configserver
+    ports:
+      -  "8084:8084"
+    depends_on:
+      - servicereg
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  servicereg:
+    image: guilhermeozana/servicereg:v1
+    container_name: servicereg
+    ports:
+      -  "8761:8761"
+    depends_on:
+      - rabbitmq
+      - zipkin
+      - postgres
+    networks:
+      - microservice-network
+      - postgres
+  
+  company:
+    image: guilhermeozana/company:v1
+    container_name: company
+    ports:
+      -  "8082:8082"
+    depends_on:
+      - servicereg
+      - configserver
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+  
+  job:
+    image: guilhermeozana/job:v1
+    container_name: job
+    ports:
+      -  "8081:8081"
+    depends_on:
+      - servicereg
+      - configserver
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://servicereg:8761/eureka
+
+  review:
+    image: guilhermeozana/review:v1
+    container_name: review
+    ports:
+      -  "8083:8083"
+    depends_on:
+      - servicereg
+      - configserver
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+  
+  gateway:
+    image: guilhermeozana/gateway:v1
+    container_name: gateway
+    ports:
+      -  "8080:8080"
+    depends_on:
+      - servicereg
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+networks:
+  postgres:
+    driver: bridge
+  microservice-network:
+    driver: bridge
+
+volumes:
+  postgres:

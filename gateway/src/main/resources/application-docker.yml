@@ -1,0 +1,68 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: company_service
+          uri: http://company:8081
+          predicates: 
+            - Path=/companies/**
+
+        - id: job_service
+          uri: http://job:8082
+          predicates: 
+            - Path=/jobs/**
+
+        - id: review_service
+          uri: http://review:8083
+          predicates:
+            - Path=/reviews/**
+      
+        - id: eureka-server
+          uri: http://servicereg:8761
+          predicates: 
+            - Path=/eureka/main
+          filters: 
+            - SetPath=/
+      
+        - id: eureka-server-static
+          uri: http://servicereg:8761
+          predicates: 
+            - Path=/eureka/**
+
+
+#Eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://servicereg:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  #Zipkin
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+      
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+          route:
+            RouteDefinitionLocator: INFO
+      
+
+
+
+

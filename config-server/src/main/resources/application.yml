@@ -9,7 +9,8 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/guilhermeozana/jobboard-app-config
+          uri: https://github.com/guilhermeozana/jobboard-backend/tree/main/config-server/repo
+          search-paths: '{application}'
 
 #Eureka
 eureka:

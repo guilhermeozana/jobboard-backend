@@ -1,6 +1,6 @@
-job-service-url: http://localhost:8081
-company-service-url: http://localhost:8082
-review-service-url: http://localhost:8083
+job-service-url: http://job:8082
+company-service-url: http://company:8082
+review-service-url: http://review:8082
 
 server:
   port: 8082
@@ -9,7 +9,7 @@ spring:
   application:
     name: job-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/jobboard
+    url: jdbc:postgresql://postgres:5432/jobboard
     username: admin
     password: admin123
   jpa:
@@ -19,7 +19,7 @@ spring:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   config:
-    import: optional:configserver:http://localhost:8084
+    import: optional:configserver:http://configserver:8084
   profiles:
     active: dev
 
@@ -27,12 +27,15 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://servicereg:8761/eureka
     register-with-eureka: true
     fetch-registry: true
 
 management:
   #Zipkin
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
   tracing:
     sampling:
       probability: 1.0

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableFeignClients
-@ComponentScan(basePackages = {"com.jobboard"})
+@ComponentScan(basePackages = {"com.jobboard.companyms", "com.jobboard.shared"})
 public class CompanymsApplication {
 
 	public static void main(String[] args) {

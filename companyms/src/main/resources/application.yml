@@ -1,39 +1,17 @@
+job-service-url: http://localhost:8081
+company-service-url: http://localhost:8082
+review-service-url: http://localhost:8083
+
 server:
   port: 8081
 
 spring:
   application:
     name: company-service
-  datasource:
-    url: jdbc:postgresql://localhost:5432/jobboard
-    username: admin
-    password: admin123
-  jpa:
-    database: POSTGRESQL
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-  #RabbitMQ
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: admin
-    password: admin123
-
-#Eureka
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-
-#Zipkin
-management:
-  tracing:
-    sampling:
-      probability: 1.0
+  config:
+    import: configserver:http://localhost:8084
+  profiles:
+    active: default
 
 
 
