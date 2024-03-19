@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.jobboard"})
+@ComponentScan(basePackages = {"com.jobboard.reviewms", "com.jobboard.shared"})
 public class ReviewmsApplication {
 
 	public static void main(String[] args) {
