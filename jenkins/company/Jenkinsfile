@@ -12,7 +12,7 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                git credentialsId: 'github_login', url: 'https://github.com/guilhermeozana/jobboard-backend.git'
+                checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]])            }
             }
         }
 
@@ -27,11 +27,9 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    dir("companyms") {
-                        DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}")
-                        docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
-                        docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:latest")
-                    }
+                    DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}")
+                    docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:latest")
                 }
             }
         }
