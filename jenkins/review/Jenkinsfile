@@ -12,7 +12,13 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                git 'https://github.com/guilhermeozana/jobboard-backend.git'
+                checkout([$class: 'GitSCM', 
+                        branches: [[name: 'main']], 
+                        doGenerateSubmoduleConfigurations: false, 
+                        extensions: [], 
+                        submoduleCfg: [], 
+                        userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]], 
+                        dir: 'reviewms')
             }
         }
 
