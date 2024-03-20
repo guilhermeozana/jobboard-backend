@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: company
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: company
+  template:
+    metadata:
+      name: company-pod
+      labels:
+        app: company
+    spec:
+      containers:
+        - name: company
+          image: guilhermeozana/jobboard-company:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kubernetes
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+      restartPolicy: Always

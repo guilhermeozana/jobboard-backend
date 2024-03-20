@@ -1,0 +1,74 @@
+company-service-url: http://company
+job-service-url: http://job
+review-service-url: http://review
+
+server:
+  port: 8082
+
+spring:
+  application:
+    name: job-service
+  datasource:
+    url: jdbc:postgresql://postgres:5432/jobboard
+    username: admin
+    password: admin123
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+#Eureka
+eureka:
+  client:
+    #    serviceUrl:
+    #      defaultZone: http://servicereg:8761/eureka
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+logging:
+  level:
+    debug: DEBUG
+
+management:
+  #Zipkin
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+  #Actuator
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+# Resilience4J
+resilience4j:
+  circuitbreaker:
+    instances:
+      companyBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        register-health-indicator: true
+        automatic-transition-from-open-to-half-open-enabled: true
+        sliding-window-type: COUNT_BASED
+  ratelimiter:
+    instances:
+      companyBreaker:
+        timeout-duration: 0
+        limit-refresh-period: 4
+        limit-for-period: 2
