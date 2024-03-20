@@ -1,0 +1,53 @@
+pipeline {
+
+    environment {
+        DOCKER_IMAGE_NAME = "guilhermeozana/jobboard-review"
+        DOCKER_IMAGE = ""
+
+    }
+
+    agent any
+
+    stages {
+
+        stage('Checkout Source') {
+            steps {
+                git 'https://github.com/guilhermeozana/jobboard-backend.git'
+            }
+        }
+    
+        stage('Build image') {
+            steps {
+                script {
+                    DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}")
+                    docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:latest")
+                }
+            }
+        }
+
+        stage('Push Image') {
+            environment {
+                registryCredential = "dockerhublogin"
+            }
+
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+                        dockerImage.push("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                        dockerImage.push("${DOCKER_IMAGE_NAME}:latest")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+
+            steps {
+                script {
+                    kubernetesDeploy(configs: "kubernetes/bootstrap/review/review-deployment.yml", kubeconfigId: "kubernetes")
+                }
+            }
+        }
+    }
+}
