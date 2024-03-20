@@ -12,7 +12,7 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                git 'https://github.com/guilhermeozana/jobboard-backend.git'
+                git credentialsId: 'github_login', url: 'https://github.com/guilhermeozana/jobboard-backend.git'
             }
         }
 
