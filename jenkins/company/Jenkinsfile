@@ -2,8 +2,6 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = "guilhermeozana/jobboard-company"
-        DOCKER_IMAGE = ""
-
     }
 
     agent any
@@ -51,8 +49,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
-                        dockerImage.push("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
-                        dockerImage.push("${DOCKER_IMAGE_NAME}:latest")
+                        bat "docker push ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+
+                        bat "docker push ${DOCKER_IMAGE_NAME}:latest"
                     }
                 }
             }
