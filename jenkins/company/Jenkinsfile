@@ -14,12 +14,21 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM', 
                         branches: [[name: 'main']], 
-                        doGenerateSubmoduleConfigurations: false, 
-                        extensions: [], 
+                        userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]], 
+                        [$class: 'GitCheckout', 
+                        branches: [[name: 'main']], 
+                        userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]], 
+                        [$class: 'PathRestriction', 
+                        excludedRegions: '', 
+                        includedRegions: '', 
+                        useDefaultExcludes: false, 
+                        skipRepositoryCache: false, 
+                        pruneBranches: false, 
+                        wipeOutWorkspace: false, 
                         submoduleCfg: [], 
                         userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]], 
                         dir: 'companyms')
-            }
+    }
         }
 
         stage ('Build Companyms') {
