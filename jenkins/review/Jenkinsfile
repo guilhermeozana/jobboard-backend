@@ -15,6 +15,12 @@ pipeline {
                 git 'https://github.com/guilhermeozana/jobboard-backend.git'
             }
         }
+
+        stage ('Build Reviewms') {
+            steps {
+                bat 'mvn clean package -DskipTests=true'
+            }
+        }
     
         stage('Build image') {
             steps {

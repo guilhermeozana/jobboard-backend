@@ -12,11 +12,18 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                git 'https://github.com/guilhermeozana/jobboard-backend.git'
+        git branch: 'main', credentialsId: 'github_login', url: 'https://github.com/guilhermeozana/jobboard-backend.git', 
+                dir: 'companyms'
+            }
+        }
+
+        stage ('Build Companyms') {
+            steps {
+                bat 'mvn clean package -DskipTests=true'
             }
         }
     
-        stage('Build image') {
+        stage('Build Image') {
             steps {
                 script {
                     DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}")
