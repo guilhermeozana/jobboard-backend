@@ -12,7 +12,7 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]])            }
+                checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]])
             }
         }
 
