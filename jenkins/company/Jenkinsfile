@@ -11,29 +11,27 @@ pipeline {
     stages {
 
         stage('Checkout Source') {
-        steps {
-            checkout([$class: 'GitSCM', 
-                    branches: [[name: 'main']], 
-                    userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']], 
-                    extensions: [[$class: 'PathRestriction', 
-                                    excludedRegions: '', 
-                                    includedRegions: 'companyms/**']]])
+            steps {
+                git 'https://github.com/guilhermeozana/jobboard-backend.git'
+            }
         }
-}
-
 
         stage ('Build Companyms') {
             steps {
-                bat 'mvn clean package -DskipTests=true'
+                dir("companyms") {
+                    bat 'mvn clean package -DskipTests=true'
+                }   
             }
         }
     
-        stage('Build Image') {
+        stage('Build image') {
             steps {
                 script {
-                    DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}")
-                    docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
-                    docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:latest")
+                    dir("companyms") {
+                        DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}")
+                        docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                        docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:latest")
+                    }
                 }
             }
         }
