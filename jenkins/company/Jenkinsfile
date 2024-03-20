@@ -19,11 +19,12 @@ pipeline {
         stage ('Build Companyms') {
             steps {
                 dir("shared") {
-                    bat 'mvn clean package -DskipTests=true'
+                    bat 'mvn clean install -DskipTests=true'
                 }
 
                 dir("companyms") {
-                    bat 'mvn clean package -DskipTests=true'
+                    bat 'mvn clean install -DskipTests=true'
+                    bat 'mvn package -DskipTests=true'
                 }   
             }
         }
