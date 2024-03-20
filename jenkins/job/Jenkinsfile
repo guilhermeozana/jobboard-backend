@@ -12,12 +12,7 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                checkout([$class: 'GitSCM', 
-                        branches: [[name: 'main']], 
-                        userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']], 
-                        extensions: [[$class: 'PathRestriction', 
-                                        excludedRegions: '', 
-                                        includedRegions: 'jobms/**']]])
+                checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/guilhermeozana/jobboard-backend.git']]])
             }
         }
 
