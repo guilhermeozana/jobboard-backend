@@ -86,13 +86,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.jobboard</groupId>
-			<artifactId>reviewms</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
