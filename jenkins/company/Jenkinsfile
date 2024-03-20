@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        stage ('Build Companyms') {
+        stage ('Build Companyms JAR') {
             steps {
                 dir("shared") {
                     bat 'mvn clean install -DskipTests=true'
@@ -29,19 +29,21 @@ pipeline {
             }
         }
     
-        stage('Build image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     dir("companyms") {
-                        DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}")
-                        docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
-                        docker.tag(DOCKER_IMAGE.id, "${DOCKER_IMAGE_NAME}:latest")
+                        bat "docker build -t ${DOCKER_IMAGE_NAME} ."
+                        
+                        bat "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                        
+                        bat "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}:latest"
                     }
                 }
             }
         }
 
-        stage('Push Image') {
+        stage('Push Docker Image') {
             environment {
                 registryCredential = "dockerhublogin"
             }
