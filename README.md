@@ -1,5 +1,6 @@
 ﻿# jobboard-backend
 
+Job Board system backend using Spring Boot, Spring Cloud (Microservices), RabbitMQ, Jenkins, Docker and Kubernetes.
 
 ## Project Structure
 
