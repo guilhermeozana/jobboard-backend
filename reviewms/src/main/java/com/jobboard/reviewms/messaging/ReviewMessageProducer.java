@@ -16,6 +16,6 @@ public class ReviewMessageProducer {
     public void sendMessage(ReviewMessageDTO reviewMessage) {
 
         rabbitTemplate
-                .convertAndSend("companyRatingQueue", reviewMessage);
+                .convertAndSend("companyRatingExchange" ,"" , reviewMessage);
     }
 }
